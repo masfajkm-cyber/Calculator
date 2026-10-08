@@ -2,54 +2,57 @@ import streamlit as st
 import re
 
 st.set_page_config(
-    page_title="Masfa's Calculator",
-    page_icon="🩷"
+    page_title="M.calculate",
+    page_icon="🧮"
 )
 
 # =========================
-# DESIGN
+# PROFESSIONAL DESIGN
 # =========================
 
 st.markdown("""
 <style>
 
-/* Normal page background */
+/* Page */
 .stApp {
-    background: white;
+    background: #f3f4f6;
 }
 
-/* Your name */
-h1 {
-    text-align: center !important;
-    color: #b1124a !important;
-    font-weight: 800 !important;
+/* Small calculator title */
+.calc-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #374151;
+    margin: 8px 0 14px 0;
 }
 
 /* Calculator panel */
 div[data-testid="stVerticalBlockBorderWrapper"] {
-    max-width: 430px !important;
+    max-width: 390px !important;
     margin: auto !important;
-    background: #f8c8dc !important;
-    border-radius: 32px !important;
-    border: none !important;
-    padding: 20px !important;
+    background: #20242a !important;
+    border-radius: 30px !important;
+    border: 1px solid #30353d !important;
+    padding: 18px !important;
 }
 
 /* Display */
 .display {
-    background: #f4a9c4;
-    color: #b1124a;
-    border-radius: 22px;
+    background: #15181c;
+    color: #f3f4f6;
+    border: 1px solid #30353d;
+    border-radius: 20px;
     padding: 18px;
     text-align: right;
-    font-size: 34px;
-    font-weight: 800;
-    margin-bottom: 15px;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 16px;
     min-height: 42px;
     overflow-x: auto;
 }
 
-/* Keep 4 buttons in every row */
+/* Four equal columns */
 div[data-testid="stHorizontalBlock"] {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
@@ -61,28 +64,51 @@ div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
     min-width: 0 !important;
 }
 
-/* Calculator buttons */
+/* ROUND BUTTONS */
 div.stButton > button {
     width: 100% !important;
-    height: 58px !important;
-    border-radius: 18px !important;
-    border: none !important;
-    background: #f4a9c4 !important;
-    color: #b1124a !important;
-    font-size: 23px !important;
-    font-weight: 800 !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    border-radius: 50% !important;
+    border: 1px solid #3a4048 !important;
+    background: #30353d !important;
+    color: #f5f5f5 !important;
+    font-size: 21px !important;
+    font-weight: 700 !important;
+    padding: 0 !important;
+    transition: background 0.08s ease, transform 0.08s ease !important;
 }
 
-/* Button hover */
+/* Button press */
+div.stButton > button:active {
+    transform: scale(0.94) !important;
+}
+
+/* Hover */
 div.stButton > button:hover {
-    background: #ef98b8 !important;
-    color: #8f0d3b !important;
+    background: #3b424c !important;
+    color: #ffffff !important;
 }
 
-/* Equals button */
+/* Operators */
+div.stButton > button[kind="secondary"] {
+    background: #3a414b !important;
+}
+
+/* Equals */
 div.stButton > button[kind="primary"] {
-    background: #e88aaa !important;
-    color: #b1124a !important;
+    background: #4f6f95 !important;
+    color: white !important;
+    border: none !important;
+}
+
+div.stButton > button[kind="primary"]:hover {
+    background: #5b7da6 !important;
+}
+
+/* Remove extra spacing */
+div[data-testid="stVerticalBlock"] {
+    gap: 0.5rem !important;
 }
 
 </style>
@@ -93,7 +119,10 @@ div.stButton > button[kind="primary"] {
 # TITLE
 # =========================
 
-st.title("🩷 Masfa's Calculator")
+st.markdown(
+    '<div class="calc-title">M.calculate</div>',
+    unsafe_allow_html=True
+)
 
 
 # =========================
@@ -105,6 +134,10 @@ if "display" not in st.session_state:
 
 
 def add(value):
+    # If the previous result was an error, start fresh
+    if st.session_state.display == "Error":
+        st.session_state.display = ""
+
     st.session_state.display += value
 
 
@@ -118,6 +151,7 @@ def calculate():
     if not expression:
         return
 
+    # Only allow calculator characters
     if not re.fullmatch(r"[0-9+\-*/.() ]+", expression):
         st.session_state.display = "Error"
         return
@@ -129,102 +163,120 @@ def calculate():
             {}
         )
 
+        # Cleaner result
+        if isinstance(result, float) and result.is_integer():
+            result = int(result)
+
         st.session_state.display = str(result)
 
-    except:
+    except Exception:
         st.session_state.display = "Error"
 
 
-# Rounded calculator container
-with st.container(border=True):
+# =========================
+# ISOLATE CALCULATOR
+# =========================
 
-    display = st.session_state.display or "0"
+@st.fragment
+def calculator():
 
-    st.markdown(
-        f'<div class="display">{display}</div>',
-        unsafe_allow_html=True
-    )
+    with st.container(border=True):
 
-    # ROW 1
-    row = st.columns(4)
+        display = st.session_state.display or "0"
 
-    with row[0]:
-        if st.button("7", key="seven"):
-            add("7")
+        st.markdown(
+            f'<div class="display">{display}</div>',
+            unsafe_allow_html=True
+        )
 
-    with row[1]:
-        if st.button("8", key="eight"):
-            add("8")
+        # ROW 1
+        row = st.columns(4)
 
-    with row[2]:
-        if st.button("9", key="nine"):
-            add("9")
+        with row[0]:
+            if st.button("7", key="seven"):
+                add("7")
 
-    with row[3]:
-        if st.button("÷", key="divide"):
-            add("/")
+        with row[1]:
+            if st.button("8", key="eight"):
+                add("8")
 
+        with row[2]:
+            if st.button("9", key="nine"):
+                add("9")
 
-    # ROW 2
-    row = st.columns(4)
-
-    with row[0]:
-        if st.button("4", key="four"):
-            add("4")
-
-    with row[1]:
-        if st.button("5", key="five"):
-            add("5")
-
-    with row[2]:
-        if st.button("6", key="six"):
-            add("6")
-
-    with row[3]:
-        if st.button("×", key="multiply"):
-            add("*")
+        with row[3]:
+            if st.button("÷", key="divide"):
+                add("/")
 
 
-    # ROW 3
-    row = st.columns(4)
+        # ROW 2
+        row = st.columns(4)
 
-    with row[0]:
-        if st.button("1", key="one"):
-            add("1")
+        with row[0]:
+            if st.button("4", key="four"):
+                add("4")
 
-    with row[1]:
-        if st.button("2", key="two"):
-            add("2")
+        with row[1]:
+            if st.button("5", key="five"):
+                add("5")
 
-    with row[2]:
-        if st.button("3", key="three"):
-            add("3")
+        with row[2]:
+            if st.button("6", key="six"):
+                add("6")
 
-    with row[3]:
-        if st.button("−", key="minus"):
-            add("-")
-
-
-    # ROW 4
-    row = st.columns(4)
-
-    with row[0]:
-        if st.button("C", key="clear"):
-            clear()
-
-    with row[1]:
-        if st.button("0", key="zero"):
-            add("0")
-
-    with row[2]:
-        if st.button(".", key="decimal"):
-            add(".")
-
-    with row[3]:
-        if st.button("+", key="plus"):
-            add("+")
+        with row[3]:
+            if st.button("×", key="multiply"):
+                add("*")
 
 
-    # EQUALS
-    if st.button("=", key="equals", type="primary", use_container_width=True):
-        calculate()
+        # ROW 3
+        row = st.columns(4)
+
+        with row[0]:
+            if st.button("1", key="one"):
+                add("1")
+
+        with row[1]:
+            if st.button("2", key="two"):
+                add("2")
+
+        with row[2]:
+            if st.button("3", key="three"):
+                add("3")
+
+        with row[3]:
+            if st.button("−", key="minus"):
+                add("-")
+
+
+        # ROW 4
+        row = st.columns(4)
+
+        with row[0]:
+            if st.button("C", key="clear"):
+                clear()
+
+        with row[1]:
+            if st.button("0", key="zero"):
+                add("0")
+
+        with row[2]:
+            if st.button(".", key="decimal"):
+                add(".")
+
+        with row[3]:
+            if st.button("+", key="plus"):
+                add("+")
+
+
+        # EQUALS
+        if st.button(
+            "=",
+            key="equals",
+            type="primary",
+            use_container_width=True
+        ):
+            calculate()
+
+
+calculator()
