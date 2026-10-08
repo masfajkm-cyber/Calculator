@@ -6,46 +6,50 @@ st.set_page_config(
     page_icon="🩷"
 )
 
-# -----------------------------
-# PINK + ROUNDED DESIGN
-# -----------------------------
+# =========================
+# DESIGN
+# =========================
 
 st.markdown("""
 <style>
 
+/* Normal page background */
 .stApp {
-    background: #fffafa;
+    background: white;
 }
 
+/* Your name */
 h1 {
-    text-align: center;
-    color: #c2185b;
+    text-align: center !important;
+    color: #b1124a !important;
+    font-weight: 800 !important;
 }
 
-/* Rounded calculator body */
-.st-key-calculator {
-    max-width: 430px;
-    margin: 0 auto;
-    background: #fff0f6;
-    padding: 22px;
-    border-radius: 30px;
+/* Calculator panel */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    max-width: 430px !important;
+    margin: auto !important;
+    background: #f8c8dc !important;
+    border-radius: 32px !important;
+    border: none !important;
+    padding: 20px !important;
 }
 
-/* Pink display */
+/* Display */
 .display {
-    background: #ffb6d5;
-    color: #86154b;
+    background: #f4a9c4;
+    color: #b1124a;
     border-radius: 22px;
     padding: 18px;
     text-align: right;
     font-size: 34px;
-    font-weight: bold;
+    font-weight: 800;
     margin-bottom: 15px;
     min-height: 42px;
     overflow-x: auto;
 }
 
-/* Force every button row to stay 4 across */
+/* Keep 4 buttons in every row */
 div[data-testid="stHorizontalBlock"] {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
@@ -55,7 +59,6 @@ div[data-testid="stHorizontalBlock"] {
 div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
     width: 100% !important;
     min-width: 0 !important;
-    flex: none !important;
 }
 
 /* Calculator buttons */
@@ -64,26 +67,38 @@ div.stButton > button {
     height: 58px !important;
     border-radius: 18px !important;
     border: none !important;
-    background: #ff91bd !important;
-    color: white !important;
+    background: #f4a9c4 !important;
+    color: #b1124a !important;
     font-size: 23px !important;
-    font-weight: bold !important;
+    font-weight: 800 !important;
 }
 
+/* Button hover */
 div.stButton > button:hover {
-    background: #ff7eae !important;
+    background: #ef98b8 !important;
+    color: #8f0d3b !important;
+}
+
+/* Equals button */
+div.stButton > button[kind="primary"] {
+    background: #e88aaa !important;
+    color: #b1124a !important;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 
-# -----------------------------
-# CALCULATOR
-# -----------------------------
+# =========================
+# TITLE
+# =========================
 
 st.title("🩷 Masfa's Calculator")
 
+
+# =========================
+# CALCULATOR
+# =========================
 
 if "display" not in st.session_state:
     st.session_state.display = ""
@@ -103,7 +118,6 @@ def calculate():
     if not expression:
         return
 
-    # Only allow calculator characters
     if not re.fullmatch(r"[0-9+\-*/.() ]+", expression):
         st.session_state.display = "Error"
         return
@@ -121,11 +135,8 @@ def calculate():
         st.session_state.display = "Error"
 
 
-# -----------------------------
-# ROUNDED CALCULATOR BOX
-# -----------------------------
-
-with st.container(key="calculator"):
+# Rounded calculator container
+with st.container(border=True):
 
     display = st.session_state.display or "0"
 
@@ -215,5 +226,5 @@ with st.container(key="calculator"):
 
 
     # EQUALS
-    if st.button("=", key="equals", use_container_width=True):
+    if st.button("=", key="equals", type="primary", use_container_width=True):
         calculate()
