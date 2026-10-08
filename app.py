@@ -18,37 +18,37 @@ st.markdown("""
     background: #f3f4f6;
 }
 
-/* Small calculator title */
+/* Small title */
 .calc-title {
     text-align: center;
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 700;
     color: #374151;
     margin: 8px 0 14px 0;
 }
 
-/* Calculator panel */
+/* Calculator */
 div[data-testid="stVerticalBlockBorderWrapper"] {
-    max-width: 390px !important;
+    max-width: 430px !important;
     margin: auto !important;
     background: #20242a !important;
-    border-radius: 30px !important;
+    border-radius: 32px !important;
     border: 1px solid #30353d !important;
-    padding: 18px !important;
+    padding: 20px !important;
 }
 
 /* Display */
 .display {
     background: #15181c;
-    color: #f3f4f6;
+    color: #f5f5f5;
     border: 1px solid #30353d;
-    border-radius: 20px;
+    border-radius: 21px;
     padding: 18px;
     text-align: right;
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 700;
-    margin-bottom: 16px;
-    min-height: 42px;
+    margin-bottom: 18px;
+    min-height: 44px;
     overflow-x: auto;
 }
 
@@ -56,7 +56,7 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
 div[data-testid="stHorizontalBlock"] {
     display: grid !important;
     grid-template-columns: repeat(4, 1fr) !important;
-    gap: 10px !important;
+    gap: 9px !important;
 }
 
 div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
@@ -64,35 +64,31 @@ div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
     min-width: 0 !important;
 }
 
-/* ROUND BUTTONS */
+/* BIG ROUND BUTTONS */
 div.stButton > button {
-    width: 100% !important;
-    height: 64px !important;
-    min-height: 64px !important;
+    width: 78px !important;
+    height: 78px !important;
+    min-height: 78px !important;
     border-radius: 50% !important;
-    border: 1px solid #3a4048 !important;
+    border: 1px solid #414852 !important;
     background: #30353d !important;
     color: #f5f5f5 !important;
-    font-size: 21px !important;
+    font-size: 23px !important;
     font-weight: 700 !important;
     padding: 0 !important;
+    margin: auto !important;
     transition: background 0.08s ease, transform 0.08s ease !important;
 }
 
-/* Button press */
+/* Press effect */
 div.stButton > button:active {
-    transform: scale(0.94) !important;
+    transform: scale(0.93) !important;
 }
 
 /* Hover */
 div.stButton > button:hover {
-    background: #3b424c !important;
-    color: #ffffff !important;
-}
-
-/* Operators */
-div.stButton > button[kind="secondary"] {
-    background: #3a414b !important;
+    background: #3c434d !important;
+    color: white !important;
 }
 
 /* Equals */
@@ -103,12 +99,12 @@ div.stButton > button[kind="primary"] {
 }
 
 div.stButton > button[kind="primary"]:hover {
-    background: #5b7da6 !important;
+    background: #5c80aa !important;
 }
 
-/* Remove extra spacing */
+/* Spacing */
 div[data-testid="stVerticalBlock"] {
-    gap: 0.5rem !important;
+    gap: 0.55rem !important;
 }
 
 </style>
@@ -134,7 +130,6 @@ if "display" not in st.session_state:
 
 
 def add(value):
-    # If the previous result was an error, start fresh
     if st.session_state.display == "Error":
         st.session_state.display = ""
 
@@ -151,7 +146,6 @@ def calculate():
     if not expression:
         return
 
-    # Only allow calculator characters
     if not re.fullmatch(r"[0-9+\-*/.() ]+", expression):
         st.session_state.display = "Error"
         return
@@ -163,7 +157,6 @@ def calculate():
             {}
         )
 
-        # Cleaner result
         if isinstance(result, float) and result.is_integer():
             result = int(result)
 
@@ -174,7 +167,7 @@ def calculate():
 
 
 # =========================
-# ISOLATE CALCULATOR
+# FASTER CALCULATOR
 # =========================
 
 @st.fragment
@@ -208,7 +201,6 @@ def calculator():
             if st.button("÷", key="divide"):
                 add("/")
 
-
         # ROW 2
         row = st.columns(4)
 
@@ -227,7 +219,6 @@ def calculator():
         with row[3]:
             if st.button("×", key="multiply"):
                 add("*")
-
 
         # ROW 3
         row = st.columns(4)
@@ -248,7 +239,6 @@ def calculator():
             if st.button("−", key="minus"):
                 add("-")
 
-
         # ROW 4
         row = st.columns(4)
 
@@ -267,7 +257,6 @@ def calculator():
         with row[3]:
             if st.button("+", key="plus"):
                 add("+")
-
 
         # EQUALS
         if st.button(
