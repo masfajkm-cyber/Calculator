@@ -1,4 +1,3 @@
-
 import streamlit as st
 import re
 
@@ -7,58 +6,62 @@ st.set_page_config(page_title="Masfa's Calculator", page_icon="🩷")
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #fff0f6, #ffe0ec);
+    background: linear-gradient(135deg, #fff0f6, #ffe1ed);
 }
 
 h1 {
     text-align: center;
     color: #c2185b;
-    font-weight: 800;
 }
 
-.calculator {
-    max-width: 420px;
-    margin: auto;
+/* FORCE 4 BUTTONS IN EVERY ROW */
+div[data-testid="stHorizontalBlock"] {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 10px !important;
 }
 
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: none !important;
+}
+
+/* DISPLAY */
 .display {
     background: #ffb6d5;
     color: #8a1748;
     border-radius: 20px;
-    padding: 22px;
+    padding: 20px;
     text-align: right;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: bold;
-    margin-bottom: 18px;
-    box-shadow: 0 5px 15px rgba(194, 24, 91, 0.15);
+    margin-bottom: 15px;
     overflow-x: auto;
 }
 
+/* BUTTONS */
 div.stButton > button {
-    width: 100%;
-    height: 65px;
-    border-radius: 18px;
-    border: none;
-    background: #ff8fba;
-    color: white;
-    font-size: 24px;
-    font-weight: 700;
+    width: 100% !important;
+    height: 62px !important;
+    border-radius: 18px !important;
+    border: none !important;
+    background: #ff91bd !important;
+    color: white !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
     box-shadow: 0 4px 8px rgba(194, 24, 91, 0.18);
-    transition: 0.15s;
 }
 
 div.stButton > button:hover {
-    background: #ff6fa5;
-    transform: scale(1.03);
+    background: #ff6fa5 !important;
 }
 
 div.stButton > button:active {
-    transform: scale(0.96);
+    transform: scale(0.95);
 }
 </style>
 """, unsafe_allow_html=True)
-
-st.markdown('<div class="calculator">', unsafe_allow_html=True)
 
 st.title("🩷 Masfa's Calculator")
 
@@ -77,7 +80,6 @@ def calculate():
     if not expression:
         return
 
-    # Only allow calculator characters
     if not re.fullmatch(r"[0-9+\-*/.() ]+", expression):
         st.session_state.display = "Error"
         return
@@ -96,83 +98,68 @@ st.markdown(
 )
 
 # ROW 1
-cols = st.columns(4)
+row = st.columns(4)
 
-with cols[0]:
-    if st.button("7", key="7"):
+with row[0]:
+    if st.button("7", key="seven"):
         add("7")
-
-with cols[1]:
-    if st.button("8", key="8"):
+with row[1]:
+    if st.button("8", key="eight"):
         add("8")
-
-with cols[2]:
-    if st.button("9", key="9"):
+with row[2]:
+    if st.button("9", key="nine"):
         add("9")
-
-with cols[3]:
+with row[3]:
     if st.button("÷", key="divide"):
         add("/")
 
 # ROW 2
-cols = st.columns(4)
+row = st.columns(4)
 
-with cols[0]:
-    if st.button("4", key="4"):
+with row[0]:
+    if st.button("4", key="four"):
         add("4")
-
-with cols[1]:
-    if st.button("5", key="5"):
+with row[1]:
+    if st.button("5", key="five"):
         add("5")
-
-with cols[2]:
-    if st.button("6", key="6"):
+with row[2]:
+    if st.button("6", key="six"):
         add("6")
-
-with cols[3]:
+with row[3]:
     if st.button("×", key="multiply"):
         add("*")
 
 # ROW 3
-cols = st.columns(4)
+row = st.columns(4)
 
-with cols[0]:
-    if st.button("1", key="1"):
+with row[0]:
+    if st.button("1", key="one"):
         add("1")
-
-with cols[1]:
-    if st.button("2", key="2"):
+with row[1]:
+    if st.button("2", key="two"):
         add("2")
-
-with cols[2]:
-    if st.button("3", key="3"):
+with row[2]:
+    if st.button("3", key="three"):
         add("3")
-
-with cols[3]:
+with row[3]:
     if st.button("−", key="minus"):
         add("-")
 
 # ROW 4
-cols = st.columns(4)
+row = st.columns(4)
 
-with cols[0]:
+with row[0]:
     if st.button("C", key="clear"):
         clear()
-
-with cols[1]:
-    if st.button("0", key="0"):
+with row[1]:
+    if st.button("0", key="zero"):
         add("0")
-
-with cols[2]:
+with row[2]:
     if st.button(".", key="decimal"):
         add(".")
-
-with cols[3]:
+with row[3]:
     if st.button("+", key="plus"):
         add("+")
 
-# EQUAL BUTTON
-if st.button("=", key="equals"):
+if st.button("=", key="equals", use_container_width=True):
     calculate()
-
-st.markdown("</div>", unsafe_allow_html=True)
